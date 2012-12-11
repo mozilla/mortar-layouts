@@ -3,6 +3,12 @@
 
 This is a UI library that is used in many of the [mortar](https://github.com/mozilla/mortar) templates. Mortar is a collection of templates that help developers get started writing web apps quickly, whether it's for Firefox OS or other platforms.
 
+It is powered by [backbone.js](http://backbonejs.org/) so that you can quickly use "models" to work with your app's data. Any changes to this data are propagated across the app automatically.
+
+For now, this library is only usable with [require.js](http://requirejs.org/). In the future we will most likely make this optional.
+
+This library requires [backbone.js](http://backbonejs.org/), [zepto](http://zeptojs.com/), [underscore](http://underscorejs.org/), and [x-tags](https://github.com/mozilla/x-tag). If you use the [mortar templates](https://github.com/mozilla/mortar/), all of this is already hooked up for you.
+
 # Usage
 
 ## HTML
