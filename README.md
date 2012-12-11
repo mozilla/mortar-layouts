@@ -39,7 +39,7 @@ The `x-view` and `x-listview` tags can have a `header` and/or `footer` element. 
 
 This creates a page with a header with the title "Item" and a button with the text "Edit" that brings up the edit view when pressed, and a footer with a "Delete" button that brings up the delete view. The `data-view` attribute specifies a CSS selector to select a different view.
 
-View the [example HTML](https://github.com/mozilla/mortar-list-detail/blob/master/www/index.html) included in the project.
+[View some example HTML](https://github.com/mozilla/mortar-list-detail/blob/master/www/index.html) from the mortar-list-detail template.
 
 ## Javascript
 
@@ -66,7 +66,7 @@ All of the properties/methods from `x-view` are available except `render` and `m
 * `view.collection` -- Get or set the view's collection
 * `view.add(item)` -- Add an item (either a javascript dict or a Backbone model)
 
-[View the example code](https://github.com/mozilla/mortar-list-detail/blob/master/www/js/app.js) that comes by default.
+[View some example code in the mortar-list-detail project](https://github.com/mozilla/mortar-list-detail/blob/master/www/js/app.js).
 
 For example, to add items to the list, just grab the list tag and add them.
 
