@@ -18,7 +18,7 @@ define(function(require) {
     }
 
     // Force all of the tags to be expanded at the same time
-    //xtag.domready = false;
+    xtag.domready = false;
 
     xtag.register('x-view', {
         onCreate: function() {
@@ -106,16 +106,16 @@ define(function(require) {
         }
     });
 
-    // // Force all the tags to be expanded at the same time (hack)
-    // xtag.domready = true;
-    // xtag.query(document, xtag.tagList).forEach(function(element){
-    //     if(xtag.tagCheck(element)){
-    //         xtag.extendElement(element);
-    //         if(document.documentElement.contains(element)){
-    //             xtag.getOptions(element).onInsert.call(element);
-    //         } 
-    //     }
-    // });
+    // Force all the tags to be expanded at the same time (hack)
+    xtag.domready = true;
+    xtag.query(document, xtag.tagList).forEach(function(element){
+        if(xtag.tagCheck(element)){
+            xtag.extendElement(element);
+            if(document.documentElement.contains(element)){
+                xtag.getOptions(element).onInsert.call(element);
+            } 
+        }
+    });
 
     window.onresize = function() {
         var els = 'x-view, x-listview';

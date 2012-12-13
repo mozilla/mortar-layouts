@@ -106,15 +106,13 @@ define(function(require) {
             // the parent ._contents. However, if we are not inside a
             // view, it should just use the immediate parent.
 
-            if(el.parent().parent().parent().is('x-view')) {
+            if(el.parent().is('.contents') &&
+               el.parent().parent().is('._contents') &&
+               el.parent().parents().parent().is('x-view')) {
                 parentEl = el.parent().parent();
             }
-            else if(el.parent().parent().is('x-view')) {
-                // This means we have a manual layout
-                parentEl = null;
-            }
             else {
-                parentEl = el.parent();
+                parentEl = null;
             }
 
             var barHeights = (el.children('header').height() +

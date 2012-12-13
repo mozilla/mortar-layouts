@@ -17,7 +17,7 @@ define(function(require) {
             var view = btn.data('view');
             if(view) {
                 btn.click(function() {
-                    _this.openView(view);
+                    _this.openView(view, btn.data('push') == 'true');
                 });
             }
         });
@@ -25,7 +25,7 @@ define(function(require) {
         this.el = el.get(0);
     }
 
-    Footer.prototype.openView = function(viewSelector) {
+    Footer.prototype.openView = function(viewSelector, forcePush) {
         var viewDOM = $(viewSelector).get(0);
 
         if(viewDOM) {
@@ -35,12 +35,15 @@ define(function(require) {
             // If the target view is going to cover up this view, we
             // want to push it on the stack. Otherwise, simply open it.
             // Also, if there is no parent, push it onto the global stack.
-            if(!parentDOM || (parentDOM.contains(this.parent.el) &&
-                              parentDOM != this.parent.el)) {
-                view.open(null, 'slideLeft');
-            }
-            else {
-                view.openAlone();                            
+            if(!view.parent.manualLayout) {
+                if(forcePush || !parentDOM ||
+                   (parentDOM.contains(this.parent.el) &&
+                    parentDOM != this.parent.el)) {
+                    view.open(null, 'slideLeft');
+                }
+                else {
+                    view.openAlone();                            
+                }
             }
         }
     };
