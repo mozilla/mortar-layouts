@@ -113,31 +113,31 @@ You should also be familiar with backbone.js [models](http://backbonejs.org/#Mod
 
 Assuming `tag` is an instance of an `x-view` tag:
 
-* `tag.titleField = 'title'`
+* **`tag.titleField = 'title'`**
 
 Set the item field for the title. This defaults to "title". You can use this when your view has a backbone.js model attached to it. When opened, it will automatically change the title in the `header` tag to the value of the specified field in the model.
 
-* `tag.render = function(model) { ... }`
+* **`tag.render = function(model) { ... }`**
 
 Set the function for rendering the tag. This is only helpful if a model is attached to the view, and it is called every time it is opened. The model will be passed as the first argument. The `this` object is bound to the `x-view` or `x-listview` DOM element. Use this to dynamically render the model.
 
-* `tag.getTitle = function(model) { ... }`
+* **`tag.getTitle = function(model) { ... }`**
 
 Set the function for dynamically generating a title. Called whenever the view opens. Use this to generate a title based off a model, which is passed as the first argument.
 
-* `tag.model`
+* **`tag.model`**
 
 Get or set the model from the backbone view.
 
-* `tag.onOpen = function() { ... }`
+* **`tag.onOpen = function() { ... }`**
 
 Set a callback for when the view is opened.
 
-* `tag.open(model, anim)`
+* **`tag.open(model, anim)`**
 
 Open the view with the model and animation (both are optional). See below for currently available animations. If you want to specify just the animation, pass `null`, for the model. By default, there is no animation.
 
-* `tag.close(anim)`
+* **`tag.close(anim)`**
 
 Close the view with the animation (optional). By default, there is no animation.
 
@@ -147,19 +147,19 @@ The currently available animations are `instant`, `instantOut`, `slideLeft`, and
 
 All of the properties/methods from `x-view` are available except `render` and `model`. The following are additional properties/methods:
 
-* `view.renderRow = function(model) { ... }`
+* **`view.renderRow = function(model) { ... }`**
 
 Set the function for rendering a row. By default, it simply shows the field from the model specified by the `titleField` option (see the `x-view` API), which defaults to "title".
 
-* `view.nextView = '<CSS selector>'`
+* **`view.nextView = '<CSS selector>'`**
 
 Set the view to open when a row is selected (as a CSS selector).
 
-* `view.collection`
+* **`view.collection`**
 
 Get or set the view's collection.
 
-* `view.add(item)`
+* **`view.add(item)`**
 
 Add an item to the list. You can pass a raw javascript has like `{ name: 'James', age: 28 }` or an actual backbone model instance. The item will be immediately rendered in the list.
 
