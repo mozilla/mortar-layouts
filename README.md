@@ -42,14 +42,14 @@ The `x-view` tag is a basic building block like `div`. The difference is that it
 * You can compose and nest `x-view` tags. One example of why you'd want to do this is if you wanted a global header or footer. If you have a global `x-view` and several `x-view` tags inside of it, the global `x-view` header and/or footer will still appear while its children are being displayed individually.
 
 * A `header` child element of `x-view` is special. It is pinned at the top of the view and comes with a few default styles, which you can override in CSS.
-** An `h1` inside of a `header` **is required**. It is centered and set as the title for the view.
-** When a view with a header is added to the navigation stack, a "back" button is automatically added to the header.
+  * An `h1` inside of a `header` **is required**. It is centered and set as the title for the view.
+  * When a view with a header is added to the navigation stack, a "back" button is automatically added to the header.
 
 * A `footer` child element of `x-view` is special also. It is pinned at the bottom of the view and comes with default styles.
 
 * A `button` element inside of a `header` or `footer` is special; it receives some default styles and is meant to to used to open other views. Because of this, it has two data attributes that customize its behavior:
-** `data-view`: Specifies the view to open when pressed. The value is a CSS selector which selects the `x-view` tag. Example: `<button data-view=".myview">`
-** `data-push`: If set to "true", always push the view onto the view stack. Usually if the view being opened does not cover up this button, it instead simply makes it appear and does not push it onto the navigation stack. Use this to force the "push" behavior. Example: `<button data-view=".myview" data-push="true">`
+  * `data-view`: Specifies the view to open when pressed. The value is a CSS selector which selects the `x-view` tag. Example: `<button data-view=".myview">`
+  * `data-push`: If set to "true", always push the view onto the view stack. Usually if the view being opened does not cover up this button, it instead simply makes it appear and does not push it onto the navigation stack. Use this to force the "push" behavior. Example: `<button data-view=".myview" data-push="true">`
 
 ### x-listview
 
