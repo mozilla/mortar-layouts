@@ -1,7 +1,5 @@
 
 define(function(require) {
-    var xtag = require('x-tag');
-
     var $ = require('zepto');
     var _ = require('underscore');
     var Backbone = require('backbone');
@@ -25,10 +23,21 @@ define(function(require) {
 
     var BasicView = Backbone.View.extend({
         initialize: function() {
+            // `initView` is a separate function so anything that
+            // extends `BasicView` and overrides `initialize` can still
+            // call it
+            this.initView();
+        },
+
+        initView: function() {
+            var el = $(this.el);
+
             this._stack = [];
-            
-            var p = $(this.el).parents('x-view').get(0);
+            this.manualLayout = el.data('layout') == 'manual';
+
+            var p = el.parents('x-view').get(0);
             this.parent = p ? p.view : globalObject;
+
             this.initMarkup();
         },
 
@@ -51,11 +60,21 @@ define(function(require) {
             var contents = $(nodes);
 
             if(!contents.length) {
-                el.append('<div class="_contents"><div class="contents"></div></div>');
+                if(this.manualLayout) {
+                    el.append('<div class="_contents"></div>');
+                }
+                else {
+                    el.append('<div class="_contents"><div class="contents"></div></div>');
+                }
             }
             else {
-                contents.wrapAll('<div class="contents"></div>');
-                el.children('.contents').wrap('<div class="_contents"></div>');
+                if(this.manualLayout) {
+                    contents.wrapAll('<div class="_contents"></div>');
+                }
+                else {
+                    contents.wrapAll('<div class="contents"></div>');
+                    el.children('.contents').wrap('<div class="_contents"></div>');
+                }
             }
 
             if(this.header) {
@@ -68,33 +87,46 @@ define(function(require) {
 
             // Position the view (not done in css because we don't
             // want a "pop" when the page loads)
-            el.css({
-                position: 'absolute',
-                top: 0,
-                left: 0
-            });
+            // el.css({
+            //     position: 'absolute',
+            //     top: 0,
+            //     left: 0
+            // });
             this.onResize();
         },
 
         onResize: function() {
             var el = $(this.el);
+            var parentEl;
 
-            // The parent element is the closest ._contents if exists,
-            // otherwise the immediate parent
-            var appEl = el.parents('._contents').first();            
-            if(!appEl.length) {
-                appEl = el.parent();
+            // The structure of a view is `x-view > ._contents >
+            // .contents`. The extra markup lets users put padding on
+            // the .contents element reliably. Because of this, if
+            // views are inside views, we really want the dimension of
+            // the parent ._contents. However, if we are not inside a
+            // view, it should just use the immediate parent.
+
+            if(el.parent().parent().parent().is('x-view')) {
+                parentEl = el.parent().parent();
+            }
+            else if(el.parent().parent().is('x-view')) {
+                // This means we have a manual layout
+                parentEl = null;
+            }
+            else {
+                parentEl = el.parent();
             }
 
-            var appHeight = appEl.height();
+            var barHeights = (el.children('header').height() +
+                              el.children('footer').height());
 
-            // Width
-            el.width(appEl.width());
-
-            // Height (minus the header and footer)
-            var height = (el.children('header').height() +
-                          el.children('footer').height());
-            el.children('._contents').css({ height: appHeight - height });
+            if(parentEl) {
+                el.width(parentEl.width());
+                el.children('._contents').css({ height: parentEl.height() - barHeights });
+            }
+            else {
+                el.children('._contents').css({ height: el.height() - barHeights });
+            }
 
             if(this.header) {
                 this.header.setTitle(this.header.getTitle());
@@ -215,11 +247,11 @@ define(function(require) {
             if(stack[lastIdx] == this.el) {
                 stack.pop();
             }
-            
+
             anims[anim](this.el);
             this.model = null;
         },
-        
+
         render: function() {
             var model = this.model;
 
@@ -233,64 +265,6 @@ define(function(require) {
             }
         }
     });
-
-    xtag.register('x-view', {
-        onCreate: function() {
-            var view = this.view = new BasicView({ el: this });
-            
-            if(this.dataset.first == 'true') {
-                view.parent.clearStack();
-                view.open();
-            }
-            else if(!view.parent.stackSize()) {
-                view.open();
-            }
-        },
-        getters: {
-            model: function() {
-                return this.view.model;
-            }
-        },
-        setters: {
-            titleField: function(name) {
-                this.view.options.titleField = name;
-            },
-            render: function(func) {
-                this.view.options.render = func;
-            },
-            getTitle: function(func) {
-                this.view.getTitle = function() {
-                    // It should be called with "this" as the element,
-                    // not the view, since that's what it looks like
-                    // from the user perspective
-                    return func.call(this.el);
-                };
-            },
-            model: function(model) {
-                this.view.model = model;
-            },
-            onOpen: function(func) {
-                this.view.onOpen = func;
-            }
-        },
-        methods: {
-            open: function(model, anim) {
-                this.view.open(model, anim);
-            },
-            close: function(anim) {
-                this.view.close(anim);
-            }
-        }
-    });
-
-    window.onresize = function() {
-        var els = 'x-view, x-listview';
-        $(els).each(function() {
-            this.view.onResize();
-        });
-    };
-
-    BasicView.globalObject = globalObject;
 
     return BasicView;
 });

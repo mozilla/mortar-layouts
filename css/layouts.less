@@ -7,11 +7,15 @@ html, body {
 }
 
 .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+
     width: 100%;
     height: 100%;
     background-color: white;
     text-align: center;
-    margin-top: 5em;
+    padding-top: 5em;
     color: #dddddd;
 }
 
@@ -28,14 +32,22 @@ html, body {
     cursor: pointer;
 }
 
-#app ._contents {
-    display: block;
-    width: 100%;
-    height: 100%;
+/* #app ._contents { */
+/*     display: block; */
+/*     width: 100%; */
+/*     height: 100%; */
+/* } */
+
+x-view[data-layout=manual]  {
+    /* height: 100%; */
+    /* width: 100%; */
 }
 
 x-view, x-listview {
     background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
 
     > header, > footer {
         overflow: hidden;
@@ -98,6 +110,9 @@ x-view, x-listview {
         position: relative;
         overflow-x: hidden;
         overflow-y: auto;
+
+        width: 100%;
+        height: 100%;
     }
 }
 
