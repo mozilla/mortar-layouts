@@ -39,11 +39,11 @@ define(function(require) {
                 this.view.options.render = func;
             },
             getTitle: function(func) {
-                this.view.getTitle = function() {
+                this.view.getTitle = function(item) {
                     // It should be called with "this" as the element,
                     // not the view, since that's what it looks like
                     // from the user perspective
-                    return func.call(this.el);
+                    return func.call(this.el, item);
                 };
             },
             model: function(model) {

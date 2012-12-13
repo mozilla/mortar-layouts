@@ -101,32 +101,67 @@ In this example, you would only see the first `x-listview` tag because when `x-v
 
 ## Javascript
 
-Obviously `x-view` and `x-listview` are not purely about presentation, they have special behaviors too. You can customize and extent these behaviors with the javascript API.
+Obviously `x-view` and `x-listview` are not purely about presentation, they have special behaviors too. You can customize and extend these behaviors with the javascript API.
 
-For example, in the about example HTML, there's nothing that 
+For example, in the above HTML, there's nothing that opens up the `.detail` view. You have to tell the `x-listview` what to open when a list item is clicked, so for above you would give it the CSS selector `.detail`.
 
-For the javascript side of things, you just grab those DOM tags and do stuff with them. Here are the javascript API's:
+[x-tags](https://github.com/mozilla/x-tag) allows us to define properties on native DOM elements. The API for this library is simply a set of properties on each `x-view` and `x-listview` tag.
 
-**`x-view`**:
+You should also be familiar with backbone.js [models](http://backbonejs.org/#Model). Basically a model is an object with fields and values.
 
-* `view.titleField = 'title'` -- Set the item field for the title
-* `view.render = function(item) { ... }` -- Set the function for rendering the view
-* `view.getTitle = function() { ... }` -- Set the function for dynamically generating a title
-* `view.model` -- Get or set the model
-* `view.onOpen = function() { ... }` -- set a callback for when the view is opened
-* `view.open(model, anim)` -- Open the view with the model and animation (both are optional)
-* `view.close(anim)` -- Close the view with the animation (optional)
+### x-view
+
+Assuming `tag` is an instance of an `x-view` tag:
+
+* `tag.titleField = 'title'`
+
+Set the item field for the title. This defaults to "title". You can use this when your view has a backbone.js model attached to it. When opened, it will automatically change the title in the `header` tag to the value of the specified field in the model.
+
+* `tag.render = function(model) { ... }`
+
+Set the function for rendering the tag. This is only helpful if a model is attached to the view, and it is called every time it is opened. The model will be passed as the first argument. The `this` object is bound to the `x-view` or `x-listview` DOM element. Use this to dynamically render the model.
+
+* `tag.getTitle = function(model) { ... }`
+
+Set the function for dynamically generating a title. Called whenever the view opens. Use this to generate a title based off a model, which is passed as the first argument.
+
+* `tag.model`
+
+Get or set the model from the backbone view.
+
+* `tag.onOpen = function() { ... }`
+
+Set a callback for when the view is opened.
+
+* `tag.open(model, anim)`
+
+Open the view with the model and animation (both are optional). See below for currently available animations. If you want to specify just the animation, pass `null`, for the model. By default, there is no animation.
+
+* `tag.close(anim)`
+
+Close the view with the animation (optional). By default, there is no animation.
 
 The currently available animations are `instant`, `instantOut`, `slideLeft`, and `slideRightOut`.
 
-**`x-listview`**:
+### x-listview
 
 All of the properties/methods from `x-view` are available except `render` and `model`. The following are additional properties/methods:
 
-* `view.renderRow = function(item) { ... }` -- Set the function for rendering a row
-* `view.nextView = function(sel) { ... }` -- Set the view to open when a row is selected (as a CSS selector)
-* `view.collection` -- Get or set the view's collection
-* `view.add(item)` -- Add an item (either a javascript dict or a Backbone model)
+* `view.renderRow = function(model) { ... }`
+
+Set the function for rendering a row. By default, it simply shows the field from the model specified by the `titleField` option (see the `x-view` API), which defaults to "title".
+
+* `view.nextView = '<CSS selector>'`
+
+Set the view to open when a row is selected (as a CSS selector).
+
+* `view.collection`
+
+Get or set the view's collection.
+
+* `view.add(item)`
+
+Add an item to the list. You can pass a raw javascript has like `{ name: 'James', age: 28 }` or an actual backbone model instance. The item will be immediately rendered in the list.
 
 [View some example code in the mortar-list-detail project](https://github.com/mozilla/mortar-list-detail/blob/master/www/js/app.js).
 
@@ -139,5 +174,3 @@ list.add({ title: "Bar", desc: "Bar is something else" });
 ```
 
 Those items will automatically appear in the list according to your `renderRow` function.
-
-In your HTML, define as many x-views or x-listviews as you want, configure them in javascript, and hook them up to be displayed through user events. You can configure it as much as you want.

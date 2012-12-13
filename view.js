@@ -153,7 +153,7 @@ define(function(require) {
             var text;
 
             if(this.getTitle) {
-                text = this.getTitle();
+                text = this.getTitle(model);
             }
             else if(model && model.get(titleField)) {
                 text = model.get(titleField);
@@ -255,11 +255,6 @@ define(function(require) {
 
             if(this.options.render) {
                 this.options.render.call(this.el, model);
-            }
-            else {
-                console.log('[BasicView] WARNING: No render function ' +
-                            'available. Set one on the "render" property ' +
-                            'of the x-view.');
             }
         }
     });
