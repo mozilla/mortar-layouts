@@ -48,12 +48,14 @@ The `x-view` tag is a basic building block like `div`. The difference is that it
 * A `footer` child element of `x-view` is special also. It is pinned at the bottom of the view and comes with default styles.
 
 * A `button` element inside of a `header` or `footer` is special; it receives some default styles and is meant to to used to open other views. Because of this, it has two data attributes that customize its behavior:
-  * `data-view`: Specifies the view to open when pressed. The value is a CSS selector which selects the `x-view` tag. Example: `<button data-view=".myview">`
-  * `data-push`: If set to "true", always push the view onto the view stack. Usually if the view being opened does not cover up this button, it instead simply makes it appear and does not push it onto the navigation stack. Use this to force the "push" behavior. Example: `<button data-view=".myview" data-push="true">`
+  * `data-view`: Specifies the view to open when pressed. The value is a CSS selector which selects the `x-view` tag. Example: `<button data-view=".myview">MyView</button>`
+  * `data-push`: If set to "true", always push the view onto the view stack. Usually if the view being opened does not cover up this button, it instead simply makes it appear and does not push it onto the navigation stack. Use this to force the "push" behavior. Example: `<button data-view=".myview" data-push="true">MyView</button>`
 
 ### x-listview
 
 The `x-listview` tag is exactly like the `x-view` tag, except it manages a list of items and displays it for you. The backbone view attached to the list view tag manages a collection of items, and it is automatically displayed as a list.
+
+### Example
 
 Here's how a simple list-detail app would look:
 
