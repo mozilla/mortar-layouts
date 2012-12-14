@@ -97,7 +97,7 @@ define(function(require) {
 
         onResize: function() {
             var el = $(this.el);
-            var parentEl;
+            //var parentEl;
 
             // The structure of a view is `x-view > ._contents >
             // .contents`. The extra markup lets users put padding on
@@ -106,25 +106,25 @@ define(function(require) {
             // the parent ._contents. However, if we are not inside a
             // view, it should just use the immediate parent.
 
-            if(el.parent().is('.contents') &&
-               el.parent().parent().is('._contents') &&
-               el.parent().parents().parent().is('x-view')) {
-                parentEl = el.parent().parent();
-            }
-            else {
-                parentEl = null;
-            }
+            // if(el.parent().is('.contents') &&
+            //    el.parent().parent().is('._contents') &&
+            //    el.parent().parents().parent().is('x-view')) {
+            //     parentEl = el.parent().parent();
+            // }
+            // else {
+            //     parentEl = null;
+            // }
 
             var barHeights = (el.children('header').height() +
                               el.children('footer').height());
 
-            if(parentEl) {
-                el.width(parentEl.width());
-                el.children('._contents').css({ height: parentEl.height() - barHeights });
-            }
-            else {
+            // if(parentEl) {
+            //     el.width(parentEl.width());
+            //     el.children('._contents').css({ height: parentEl.height() - barHeights });
+            // }
+            // else {
                 el.children('._contents').css({ height: el.height() - barHeights });
-            }
+        //}
 
             if(this.header) {
                 this.header.setTitle(this.header.getTitle());

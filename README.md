@@ -99,6 +99,20 @@ In this example, you would only see the first `x-listview` tag because when `x-v
 
 [View some more example HTML](https://github.com/mozilla/mortar-list-detail/blob/master/www/index.html) from the mortar-list-detail template.
 
+## CSS
+
+You can style an `x-view`, `x-listview`, or any of the headers and footers any way you like.
+
+The only thing to note is that all of the contents in the view tags live inside a `div` with a `contents` class. This is done so that you can easily give padding to your content without breaking the width or height of the element. This wrapper div flows with your content so it's height equals the height of your content.
+
+Here's how you give padding to content inside your `x-view` tags. If you want to change something like the background color, you should apply it directly to the `x-view` tag instead of `.contents` so that it fills the whole tag.
+
+```css
+x-view .contents {
+    padding: 1em;
+}
+```
+
 ## Javascript
 
 Obviously `x-view` and `x-listview` are not purely about presentation, they have special behaviors too. You can customize and extend these behaviors with the javascript API.
@@ -147,19 +161,19 @@ The currently available animations are `instant`, `instantOut`, `slideLeft`, and
 
 All of the properties/methods from `x-view` are available except `render` and `model`. The following are additional properties/methods:
 
-* **`view.renderRow = function(model) { ... }`**
+* **`tag.renderRow = function(model) { ... }`**
 
 Set the function for rendering a row. By default, it simply shows the field from the model specified by the `titleField` option (see the `x-view` API), which defaults to "title".
 
-* **`view.nextView = '<CSS selector>'`**
+* **`tag.nextView = '<CSS selector>'`**
 
 Set the view to open when a row is selected (as a CSS selector).
 
-* **`view.collection`**
+* **`tag.collection`**
 
 Get or set the view's collection.
 
-* **`view.add(item)`**
+* **`tag.add(item)`**
 
 Add an item to the list. You can pass a raw javascript has like `{ name: 'James', age: 28 }` or an actual backbone model instance. The item will be immediately rendered in the list.
 
@@ -174,3 +188,79 @@ list.add({ title: "Bar", desc: "Bar is something else" });
 ```
 
 Those items will automatically appear in the list according to your `renderRow` function.
+
+## Advanced Layouts
+
+So far, you've learned how to make a single-page app with some headers and footers. What if you want to show several views at once, like a vertically split pane?
+
+It's really easy to do that, actually.
+
+By default, an `x-view` fills up it's parent container. The parent chooses one `x-view` tag to show out of its children (usually the first one, but you can change it with `data-first`). However, if you don't want this behavior, you turn on a "manual layout".
+
+A "manual layout" tells an `x-view` that you're going to manually rearrange it's children. This is needed because it will allow you to show multiple child views at once, and also disable some extra markup that makes it easier to give padding to content.
+
+You enable it with the `data-layout` attribute:
+
+```html
+<style type="text/css">
+  .left {
+      width: 50%;
+  }
+
+  .right {
+      width: 50%;
+      left: 50%;
+  }
+</style>
+
+<x-view data-layout="manual">
+  <header>
+    <h1>My App</h1>
+  </header>
+  
+  <x-view class="left">
+    This content will be on the left.
+  </x-view>
+
+  <x-view class="right">
+    This content will be on the right.
+  </x-view>
+</x-view>
+```
+
+Note the `data-layout` attribute on the top-level `x-view`, and the CSS to set the widths of the child `x-view` tags to 50% and move the second one over by 50%. However, the header still spans the width of the top-level `x-view` as you would expect.
+
+In fact, `x-view` tags that aren't a child of another `x-view` tag acts exactly as they would in manual layout mode. That is, you can pretty much do whatever you want with them with standard HTML tags and CSS.
+
+```html
+<style type="text/css">
+  .left {
+      position: relative;
+      width: 50%;
+  }
+
+  .right {
+      position: relative;
+      width: 50%;
+      left: 50%;
+  }
+</style>
+
+<div class="left">
+  <x-view>
+    This will be on the left.
+  </x-view>
+</div>
+
+<div class="right">
+  <x-view>
+    This will be on the right.
+  </x-view>
+</div>
+```
+
+An `x-view` tag simply fills up it's parent container and obeys it. The **only caveat** is that you **must** set `position: relative` on the parent tag so that the view is anchored to it.
+
+At this point you may be thinking, why even use the view tags at all? Well, if you want a navigation stack, header, or footer, you will want to use it. The point is is that it obeys the web and you can use it anywhere you want, whether it's a fullscreen `x-view`, just part of an app, or many `x-view` tags stacked together.
+
+In the above example, **you don't actually even need the extra divs**. You could simply apply the `width` and `left` CSS straight on the tags. I added them in the example to demonstrate how `x-view` tags work within other tags.
