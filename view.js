@@ -7,19 +7,22 @@ define(function(require) {
     var Header = require('./header');
     var Footer = require('./footer');
 
-    var globalObject = {
-        _stack: [],
-        stackSize: function() {
-            return globalObject._stack.length;
-        },
-        clearStack: function() {
-            var stack = globalObject._stack;
+    function FakeView() {
+        this._stack = [];
+        this.manualLayout = true;
+
+        this.stackSize = function() {
+            return this._stack.length;
+        };
+
+        this.clearStack = function() {
+            var stack = this._stack;
 
             while(stack.length) {
                 stack[stack.length - 1].close();
             }
-        }
-    };
+        };
+    }
 
     var BasicView = Backbone.View.extend({
         initialize: function() {
@@ -35,8 +38,13 @@ define(function(require) {
             this._stack = [];
             this.manualLayout = el.data('layout') == 'manual';
 
-            var p = el.parents('x-view').get(0);
-            this.parent = p ? p.view : globalObject;
+            var p = el.parent().get(0);
+            if(p.view || p.proxyView) {
+                this.parent = p.view || p.proxyView;
+            }
+            else {
+                p.view = this.parent = new FakeView();
+            }
 
             this.initMarkup();
         },
@@ -59,22 +67,26 @@ define(function(require) {
             var nodes = Array.prototype.slice.call(el[0].childNodes);
             var contents = $(nodes);
 
-            if(!contents.length) {
-                if(this.manualLayout) {
+            if(this.manualLayout) {
+                if(!contents.length) {
                     el.append('<div class="_contents"></div>');
                 }
                 else {
-                    el.append('<div class="_contents"><div class="contents"></div></div>');
+                    contents.wrapAll('<div class="_contents"></div>');
                 }
+
+                el.children('._contents').get(0).proxyView = this;
             }
             else {
-                if(this.manualLayout) {
-                    contents.wrapAll('<div class="_contents"></div>');
+                if(!contents.length) {
+                    el.append('<div class="_contents"><div class="contents"></div></div>');    
                 }
                 else {
                     contents.wrapAll('<div class="contents"></div>');
                     el.children('.contents').wrap('<div class="_contents"></div>');
                 }
+
+                el.children('._contents').children('.contents').get(0).proxyView = this;
             }
 
             if(this.header) {

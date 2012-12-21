@@ -41,6 +41,7 @@ x-view[data-layout=manual] {
 x-view,
 x-listview {
   background-color: white;
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
@@ -115,4 +116,7 @@ x-listview > ._contents {
 }
 x-listview > ._contents > .contents {
   padding: 0;
+}
+@keyframes slideIn {
+  
 }

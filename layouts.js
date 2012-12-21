@@ -12,7 +12,8 @@ define(function(require) {
             view.parent.clearStack();
             view.open();
         }
-        else if(!view.parent.stackSize()) {
+        else if(!view.parent.stackSize() // && !view.parent.manualLayout
+               ) {
             view.open();
         }
     }

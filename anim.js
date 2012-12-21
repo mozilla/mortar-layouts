@@ -1,6 +1,7 @@
 
 define(function(require) {
     var $ = require('zepto');
+    var animations = require('./cssanimationstore');
 
     var zindex = 100;
 
@@ -28,37 +29,35 @@ define(function(require) {
     }
 
     function animateX(node, start, end, duration, bury) {
-        animate(node, start, end, 'left', duration, bury);
+        animate(node,
+                { transform: 'translateX(' + Math.floor(start) + 'px)' },
+                { transform: 'translateX(' + Math.floor(end) + 'px)' },
+                duration,
+                bury);
     }
 
-    function animate(node, start, end, property, duration, bury) {
+    function animate(node, start, end, duration, bury) {
         node = $(node);
+        var anim = animations.create();
 
-        node.css(vendorized('transitionDuration', 0, {
-            left: start
-        }));
+        anim.setKeyframe('0%', start);
+        anim.setKeyframe('100%', end);
 
-        // Triggers a layout which forces the above style to be
-        // applied before the transition starts
-        var forced = node[0].offsetLeft;
+        node.css({
+            'animation-duration': duration,
+            'animation-name': anim.name,
+            'z-index': zindex++
+        });
 
-        var styles = {
-            left: end,
-            zIndex: zindex++
-        };
+        onOnce(node, 'animationend', function() {
+            var styles = { 'animation-name': 'none' };
+            if(bury) {
+                styles['z-index'] = 0;
+            }
 
-        styles = vendorized('transitionDuration', duration, styles);
-        styles = vendorized('transitionProperty', property, styles);
-        styles = vendorized('transitionTimingFunction', 'ease-in-out', styles);
-        node.css(styles);
-
-        if(bury) {
-            onOnce(node, 'transitionend', function() {
-                // Bury the element in case the window is resized
-                // larger
-                node.css({ zIndex: 100 });
-            });
-        }
+            node.css(styles);
+            animations.remove(anim);
+        });
     }
 
     // Animations
@@ -66,7 +65,6 @@ define(function(require) {
     function instant(node) {
         node = $(node);
         node.css(vendorized('transition', 'none', {
-            left: 0,
             zIndex: zindex++
         }));
     }
@@ -74,7 +72,7 @@ define(function(require) {
     function instantOut(node) {
         node = $(node);
         node.css(vendorized('transition', 'none', {
-            left: node.width()
+            zIndex: 0
         }));
     }
 
