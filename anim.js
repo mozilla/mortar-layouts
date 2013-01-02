@@ -8,6 +8,7 @@ define(function(require) {
     // Utility
 
     function vendorized(prop, val, obj) {
+        obj = obj || {};
         obj['-webkit-' + prop] = val;
         obj['-moz-' + prop] = val;
         obj['-ms-' + prop] = val;
@@ -32,8 +33,8 @@ define(function(require) {
 
     function animateX(node, start, end, duration, bury) {
         animate(node,
-                { transform: 'translateX(' + Math.floor(start) + 'px)' },
-                { transform: 'translateX(' + Math.floor(end) + 'px)' },
+                vendorized('transform', 'translateX(' + Math.floor(start) + 'px)'),
+                vendorized('transform', 'translateX(' + Math.floor(end) + 'px)'),
                 duration,
                 bury);
     }
@@ -45,11 +46,13 @@ define(function(require) {
         anim.setKeyframe('0%', start);
         anim.setKeyframe('100%', end);
 
-        node.css({
-            'animation-duration': duration,
-            'animation-name': anim.name,
-            'z-index': zindex++
-        });
+        node.css(
+            vendorized('animation-duration', duration,
+                vendorized('animation-name', anim.name, {
+                    'z-index': zindex++
+                })
+            )
+        );
 
         addSingleEvent(node, 'animationend', function() {
             animations.remove(anim);         
@@ -94,13 +97,13 @@ define(function(require) {
         bg.insertBefore(destNode);
 
         animate(srcNode,
-                { transform: 'rotate3d(0, 1, 0, 0deg)' },
-                { transform: 'rotate3d(0, 1, 0, 180deg)' },
+                vendorized('transform', 'rotate3d(0, 1, 0, 0deg)'),
+                vendorized('transform', 'rotate3d(0, 1, 0, 180deg)'),
                 '1s');
 
         animate(destNode,
-                { transform: 'rotate3d(0, 1, 0, 180deg)' },
-                { transform: 'rotate3d(0, 1, 0, 0deg)' },
+                vendorized('transform', 'rotate3d(0, 1, 0, 180deg)'),
+                vendorized('transform', 'rotate3d(0, 1, 0, 0deg)'),
                 '1s');
 
         addSingleEvent(destNode, 'animationend', function() {

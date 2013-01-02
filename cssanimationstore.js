@@ -165,8 +165,20 @@ define(function() {
         }
 
         // Append a empty animation to the end of the stylesheet
-        var idx = styles.insertRule('@keyframes ' + name + '{}',
-                                    styles.cssRules.length);
+        try {
+            var idx = styles.insertRule('@keyframes ' + name + '{}',
+                                        styles.cssRules.length);
+        }
+        catch(e) {
+            if(e.name == 'SYNTAX_ERR') {
+                idx = styles.insertRule('@-webkit-keyframes ' + name + '{}',
+                                        styles.cssRules.length);
+            }
+            else {
+                throw e;
+            }
+        }
+
         this.animations[name] = new KeyframeAnimation(styles.cssRules[idx]);
 
         return this.animations[name];

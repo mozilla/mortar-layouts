@@ -67,7 +67,7 @@ define(function(require) {
     };
 
     Header.prototype.removeBack = function() {
-        $('.navitems.left button.back').remove();
+        $('.navitems.left button.back', this.el).remove();
     };
 
     Header.prototype.setTitle = function(text) {
