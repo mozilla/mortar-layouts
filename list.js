@@ -77,7 +77,7 @@ define(function(require) {
             var viewElement = $(sel).get(0);
 
             if(viewElement) {
-                viewElement.open(this.model, 'slideLeft');
+                viewElement.open(this.model);
             }
         }
     });

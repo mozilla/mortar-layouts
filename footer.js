@@ -39,7 +39,7 @@ define(function(require) {
                 if(forcePush || !parentDOM ||
                    (parentDOM.contains(this.parent.el) &&
                     parentDOM != this.parent.el)) {
-                    view.open(null, 'slideLeft');
+                    view.open();
                 }
                 else {
                     view.openAlone();                            

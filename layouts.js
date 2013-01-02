@@ -10,11 +10,10 @@ define(function(require) {
 
         if($(tag).data('first') == 'true') {
             view.parent.clearStack();
-            view.open();
+            view.open(null, 'instant');
         }
-        else if(!view.parent.stackSize() // && !view.parent.manualLayout
-               ) {
-            view.open();
+        else if(!view.parent.stackSize()) {
+            view.open(null, 'instant');
         }
     }
 

@@ -18,11 +18,10 @@ define(function() {
 		this.css = r.css();
 	};
 
-	var KeyframeAnimation = function(kf, index) {
+	var KeyframeAnimation = function(kf) {
 		var _this = this;
 		this.original = kf;
 		this.name = kf.name;
-        this.index = index;
 
 		this.keyframes = [];
 		var keytexts = [],
@@ -115,18 +114,18 @@ define(function() {
 		return css;
 	};
 
-    function findRules(styles, anims) {
+    function findRules(styles, func) {
 		var rules = styles.cssRules || styles.rules || [];
 
 		for(var i = rules.length - 1; i >= 0; i--) {
             var rule = rules[i];
 
             if(rule.type == CSSRule.IMPORT_RULE) {
-                findRules(rule.styleSheet, anims);
+                findRules(rule.styleSheet, func);
             }
 			else if(rule.type === window.CSSRule.WEBKIT_KEYFRAMES_RULE ||
                     rule.type === window.CSSRule.MOZ_KEYFRAMES_RULE) {
-				anims[rule.name] = new KeyframeAnimation(rule, i);
+                func(rule, styles, i);
 			}
 		}
     }
@@ -136,13 +135,15 @@ define(function() {
         var anims = {};
 
 		for(var i = styles.length - 1; i >= 0; i--) {
-			try {
-                findRules(styles[i], anims);
-			}
-			catch(e) {
-                // Trying to interrogate a stylesheet from another
-                // domain will throw a security error
-            }
+			//try {
+                findRules(styles[i], function(rule) {
+                    anims[rule.name] = new KeyframeAnimation(rule);
+                });
+		//}
+			// catch(e) {
+            //     // Trying to interrogate a stylesheet from another
+            //     // domain will throw a security error
+            // }
 		}
 
 		return anims;
@@ -166,19 +167,28 @@ define(function() {
         // Append a empty animation to the end of the stylesheet
         var idx = styles.insertRule('@keyframes ' + name + '{}',
                                     styles.cssRules.length);
-        this.animations[name] = new KeyframeAnimation(styles.cssRules[idx], idx);
+        this.animations[name] = new KeyframeAnimation(styles.cssRules[idx]);
 
         return this.animations[name];
     };
 
     Animations.prototype.remove = function(name) {
-        if(name instanceof KeyframeAnimation) {
-            name = name.name;
-        }
-
         var styles = document.styleSheets[0];
-        styles.deleteRule(this.animations[name].index);
+        name = name instanceof KeyframeAnimation ? name.name : name;
+
         this.animations[name] = null;
+
+        try {
+            findRules(styles, function(rule, styles, i) {
+                if(rule.name == name) {
+                    styles.deleteRule(i);
+                }
+            });
+        }
+        catch(e) {
+            // Trying to interrogate a stylesheet from another
+            // domain will throw a security error
+        }
     };
 
 	return new Animations();

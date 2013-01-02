@@ -37,6 +37,7 @@ define(function(require) {
 
             this._stack = [];
             this.manualLayout = el.data('layout') == 'manual';
+            this.anim = el.data('animation');
 
             var p = el.parent().get(0);
             if(p.view || p.proxyView) {
@@ -183,7 +184,7 @@ define(function(require) {
             // Open a view and push it on the parent view's navigation
             // stack
 
-            anim = anim || 'instant';
+            anim = anim || this.anim || 'slideLeft';
             var stack = this.parent._stack;
 
             if(stack.indexOf(this.el) !== -1) {
@@ -192,7 +193,14 @@ define(function(require) {
             }
 
             if(anims[anim]) {
-                anims[anim](this.el);
+                var len = stack.length;
+                var srcNode = null;
+
+                if(len) {
+                    srcNode = stack[len - 1];
+                }
+
+                anims[anim](srcNode, this.el);
             }
             else {
                 console.log('WARNING: invalid animation: ' + anim);
@@ -230,7 +238,7 @@ define(function(require) {
             anim = anim || 'instant';
 
             if(anims[anim]) {
-                anims[anim](this.el);
+                anims[anim](null, this.el);
             }
             else {
                 console.log('WARNING: invalid animation: ' + anim);
@@ -250,16 +258,19 @@ define(function(require) {
         },
 
         close: function(anim) {
-            anim = anim || 'instantOut';
+            anim = anim || (this.anim && this.anim + 'Out') || 'slideRightOut';
             var stack = this.parent._stack;
-            var lastIdx = stack.length - 1;
+            var len = stack.length;
 
-            if(stack[lastIdx] == this.el) {
-                stack.pop();
+            // Only close views that aren't at the bottom
+            if(len > 1) {
+                if(stack[len - 1] == this.el) {
+                    stack.pop();
+                }
+
+                anims[anim](stack[len - 2], this.el);
+                this.model = null;
             }
-
-            anims[anim](this.el);
-            this.model = null;
         },
 
         render: function() {
