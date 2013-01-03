@@ -1,7 +1,7 @@
 
 define(function(require) {
     var $ = require('zepto');
-    var animations = require('./cssanimationstore');
+    var animations = require('./css-animations');
 
     var zindex = 100;
 
