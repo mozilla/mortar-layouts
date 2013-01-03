@@ -39,6 +39,14 @@ define(function(require) {
                 bury);
     }
 
+    function animateY(node, start, end, duration, bury) {
+        animate(node,
+                vendorized('transform', 'translateY(' + Math.floor(start) + 'px)'),
+                vendorized('transform', 'translateY(' + Math.floor(end) + 'px)'),
+                duration,
+                bury);
+    }
+
     function animate(node, start, end, duration, bury) {
         node = $(node);
         var anim = animations.create();
@@ -55,6 +63,10 @@ define(function(require) {
         );
 
         addSingleEvent(node, 'animationend', function() {
+            if(bury) {
+                node.css({ zIndex: 0 });
+            }
+
             animations.remove(anim);         
         });
     }
@@ -91,6 +103,22 @@ define(function(require) {
         slideRight(destNode, srcNode);
     }
 
+    function slideDown(srcNode, destNode) {
+        animateY(destNode, -$(destNode).height(), 0, '500ms');
+    }
+
+    function slideDownOut(srcNode, destNode) {
+        animateY(destNode, 0, $(destNode).height(), '500ms', true);
+    }
+
+    function slideUp(srcNode, destNode) {
+        animateY(destNode, $(destNode).height(), 0, '500ms');
+    }
+
+    function slideUpOut(srcNode, destNode) {
+        animateY(destNode, 0, -$(destNode).height(), '500ms', true);
+    }
+
     function flip(srcNode, destNode) {
         var bg = $('<div class="anim-background"></div>');
         bg.css({ zIndex: zindex++ });
@@ -122,6 +150,10 @@ define(function(require) {
         slideLeftOut: slideLeftOut,
         slideRight: slideRight,
         slideRightOut: slideRightOut,
+        slideDown: slideDown,
+        slideDownOut: slideDownOut,
+        slideUp: slideUp,
+        slideUpOut: slideUpOut,
         flip: flip,
         flipOut: flipOut
     };

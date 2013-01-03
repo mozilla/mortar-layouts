@@ -17,7 +17,9 @@ define(function(require) {
             var view = btn.data('view');
             if(view) {
                 btn.click(function() {
-                    _this.openView(view, btn.data('push') == 'true');
+                    _this.openView(view,
+                                   btn.data('push') == 'true',
+                                   btn.data('animation'));
                 });
             }
         });
@@ -25,7 +27,7 @@ define(function(require) {
         this.el = el.get(0);
     }
 
-    Footer.prototype.openView = function(viewSelector, forcePush) {
+    Footer.prototype.openView = function(viewSelector, forcePush, anim) {
         var viewDOM = $(viewSelector).get(0);
 
         if(viewDOM) {
@@ -39,7 +41,7 @@ define(function(require) {
                 if(forcePush || !parentDOM ||
                    (parentDOM.contains(this.parent.el) &&
                     parentDOM != this.parent.el)) {
-                    view.open();
+                    view.open(null, anim);
                 }
                 else {
                     view.openAlone();                            

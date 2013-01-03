@@ -42,9 +42,11 @@ define(function(require) {
         }
 
         el.find('button').click(function() {
-            if(this.dataset.view) {
-                var view = $(this.dataset.view).get(0);
-                view.open(parent.model);
+            var btn = $(this);
+
+            if(btn.data('view')) {
+                var view = $(btn.data('view')).get(0);
+                view.open(parent.model, btn.data('animation'));
             }
         });
 

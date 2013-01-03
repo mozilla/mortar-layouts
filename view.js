@@ -185,6 +185,8 @@ define(function(require) {
             // stack
 
             anim = anim || this.anim || 'slideLeft';
+            this.lastAnimation = anim;
+
             var stack = this.parent._stack;
 
             if(stack.indexOf(this.el) !== -1) {
@@ -258,7 +260,17 @@ define(function(require) {
         },
 
         close: function(anim) {
-            anim = anim || (this.anim && this.anim + 'Out') || 'slideRightOut';
+            if(!anim) {
+                switch(this.lastAnimation) {
+                case 'slideLeft': anim = 'slideRightOut'; break;
+                case 'slideRight': anim = 'slideLeftOut'; break;
+                case 'slideUp': anim = 'slideDownOut'; break;
+                case 'slideDown': anim = 'slideUpOut'; break;
+                default:
+                    anim = 'slideRightOut';
+                }
+            }
+
             var stack = this.parent._stack;
             var len = stack.length;
 
