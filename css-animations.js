@@ -1,4 +1,3 @@
-
 (function() {
 
     // Utility
@@ -139,7 +138,7 @@
                                         styles.cssRules.length);
         }
         catch(e) {
-            if(e.name == 'SYNTAX_ERR') {
+            if(e.name == 'SYNTAX_ERR' || e.name == 'SyntaxError') {
                 idx = styles.insertRule('@-webkit-keyframes ' + name + '{}',
                                         styles.cssRules.length);
             }
